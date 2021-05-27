@@ -13,7 +13,7 @@ require('./configs/cors.config')(app);
 
 
 const phonesRoutes = require('./routes/phones');
-app.use('/api/phones', phonesRoutes);
+app.use('/api/teléfonos', phonesRoutes);
 
 
 app.use('*', (req, res) => {
