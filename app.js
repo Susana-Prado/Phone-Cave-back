@@ -1,32 +1,28 @@
 require('dotenv').config();
-const mongoose = require('mongoose');
-
 const express      = require('express');
+const mongoose     = require('mongoose');
 const path         = require('path');
-const app_name = require('./package.json').name;
-const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.')[0]}`);
 
+
+
+require('./configs/db.config');
 const app = express();
 
-// Middleware Setup
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-// Express View engine setup     
-
-app.use(express.static(path.join(__dirname, 'public')));
+require('./configs/middleware.config')(app);
+require('./configs/cors.config')(app);
 
 
-
-// default value for title local
-app.locals.title = 'Phone Cave';
-
+const phonesRoutes = require('./routes/phones');
+app.use('/api/phones', phonesRoutes);
 
 
-const index = require('./routes/index');
-app.use('/', index);
+app.use('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
+  });
+
+app.use((req, res, next) => {
+  return res.status(404).json({ message: "Not found"});
+})
 
 
 module.exports = app;
